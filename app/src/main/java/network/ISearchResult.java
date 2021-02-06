@@ -1,9 +1,6 @@
 package network;
 
-import com.example.tmdb.datamodel.BaseMovieModel;
 import com.example.tmdb.datamodel.BaseResponseModel;
-
-import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.http.GET;

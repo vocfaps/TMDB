@@ -10,4 +10,6 @@ import java.util.List;
 public interface IMovieHomeRepository {
     LiveData<List<TrendingMovieModel>> fetchTrendingMovies();
     LiveData<List<NowPlayingMovieModel>> fetchNowPLayingMovies();
+    void updateTrendingMovies();
+    void updateNowPlayingMovies();
 }

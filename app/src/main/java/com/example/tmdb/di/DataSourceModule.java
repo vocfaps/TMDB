@@ -16,6 +16,7 @@ import dagger.Provides;
 import dagger.hilt.InstallIn;
 import dagger.hilt.android.qualifiers.ApplicationContext;
 import dagger.hilt.components.SingletonComponent;
+import network.IHomeResponse;
 import network.ISearchResult;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -59,6 +60,11 @@ public class DataSourceModule {
     @Provides
     ISearchResult provideSearchDataSource(Retrofit retrofit) {
        return retrofit.create(ISearchResult.class);
+    }
+
+    @Provides
+    IHomeResponse provideHomeDataSource(Retrofit retrofit){
+        return retrofit.create(IHomeResponse.class);
     }
 
 }
