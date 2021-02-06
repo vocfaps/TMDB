@@ -5,6 +5,7 @@ import android.view.KeyEvent;
 import android.view.inputmethod.EditorInfo;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.widget.AppCompatEditText;
 import androidx.databinding.BindingAdapter;
@@ -36,8 +37,12 @@ public class BindingAdapters {
     public static void setEditTextSearch(AppCompatEditText editTextSearch, SearchVM viewModel) {
         editTextSearch.setOnEditorActionListener((v, actionId, event) -> {
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                viewModel.getSearchResults(editTextSearch.getText().toString());
-                return true;
+                if (NetworkUtils.isNetworkAvailable(editTextSearch.getContext())) {
+                    viewModel.getSearchResults(editTextSearch.getText().toString());
+                    return true;
+                }else{
+                    Toast.makeText(editTextSearch.getContext(), editTextSearch.getContext().getString(R.string.no_internet),Toast.LENGTH_SHORT).show();
+                }
             }
             return false;
         });

@@ -3,4 +3,6 @@
     <string name="trending_movies">Trending Movies</string>
     <string name="now_playing_movies">Now Playing</string>
     <string name="search_movie">Search A Movie</string>
+    <string name="no_internet">Please check your network connection</string>
+    <string name="no_data_found">No Data found for query</string>
 </resources>

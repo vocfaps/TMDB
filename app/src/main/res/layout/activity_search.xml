@@ -15,6 +15,9 @@
         <variable
             name="adapter"
             type="com.example.tmdb.adapters.GenericRVAdapter" />
+
+        <import type="android.view.View"/>
+        <import type="android.text.TextUtils"/>
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -31,6 +34,7 @@
             android:inputType="text"
             app:setEditTextSearch="@{viewModel}"
             tools:ignore="MissingConstraints"
+            android:text="@={viewModel.userInputLiveData}"
             android:padding="20dp"/>
 
         <androidx.recyclerview.widget.RecyclerView
@@ -41,6 +45,17 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:setGridAdapter="@{adapter}"
             app:setSpanCount="@{spanCount}"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/no_data_found"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:gravity="center_horizontal"
+            android:textStyle="bold"
+            android:textSize="20sp"
+            android:visibility="@{!TextUtils.isEmpty(viewModel.errorQuery) ? View.VISIBLE : View.GONE}"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

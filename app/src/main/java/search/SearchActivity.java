@@ -31,6 +31,7 @@ public class SearchActivity extends AppCompatActivity {
         binding.setViewModel(viewModel);
         binding.setAdapter(new GenericRVAdapter<BaseMovieModel>(new ArrayList<>()));
         binding.setSpanCount(3);
+        binding.setLifecycleOwner(this);
         binding.executePendingBindings();
 
         viewModel.getSearchResultsLiveData().observe(this, (models) -> binding.getAdapter().updateData(models));
