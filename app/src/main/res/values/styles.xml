@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="home_title">
+        <item name="android:textSize">20sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:paddingTop">10dp</item>
+        <item name="android:paddingBottom">10dp</item>
+    </style>
+
+    <style name="home_rv_style">
+        <item name="android:padding">10dp</item>
+        <item name="minHeight">@dimen/movie_item_height</item>
+    </style>
+
+</resources>
