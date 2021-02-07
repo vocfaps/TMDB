@@ -1,6 +1,8 @@
 package com.example.tmdb.di;
 
+import com.example.tmdb.contracts.IBookMarkMovieRepository;
 import com.example.tmdb.contracts.ISearchRepository;
+import com.example.tmdb.repository.BookMarkRepository;
 import com.example.tmdb.repository.SearchRepository;
 
 import dagger.Binds;
@@ -16,4 +18,8 @@ abstract class SearchModule {
     @Binds
     @ViewModelScoped
     abstract ISearchRepository getSeachRepo(SearchRepository impl);
+
+    @Binds
+    @ViewModelScoped
+    abstract IBookMarkMovieRepository getMovieDetailsRepo(BookMarkRepository impl);
 }

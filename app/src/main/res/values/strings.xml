@@ -5,4 +5,6 @@
     <string name="search_movie">Search A Movie</string>
     <string name="no_internet">Please check your network connection</string>
     <string name="no_data_found">No Data found for query</string>
+    <string name="open_bookmark">Open Bookmark</string>
+    <string name="no_items_saved">No Items BookMarked</string>
 </resources>

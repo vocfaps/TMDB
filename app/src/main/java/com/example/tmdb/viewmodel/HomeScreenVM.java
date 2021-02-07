@@ -25,6 +25,8 @@ public class HomeScreenVM extends AndroidViewModel {
     private final MutableLiveData<List<BaseMovieModel>> nowPlayingMovieModelLiveData = new MutableLiveData<>();
 
     private final IMovieHomeRepository localRepository;
+    private boolean refreshTrending=false;
+    private boolean refreshNewPlaying=false;
 
     @Inject public HomeScreenVM(@NonNull Application application, IMovieHomeRepository localRepository) {
         super(application);
@@ -52,10 +54,16 @@ public class HomeScreenVM extends AndroidViewModel {
     }
 
     public void updateNowPlayingMovies() {
-        localRepository.updateNowPlayingMovies();
+        if (!refreshNewPlaying) {
+            localRepository.updateNowPlayingMovies();
+            refreshNewPlaying = true;
+        }
     }
 
     public void updateTrendingMovies() {
-        localRepository.updateTrendingMovies();
+        if (!refreshTrending) {
+            localRepository.updateTrendingMovies();
+            refreshTrending = true;
+        }
     }
 }

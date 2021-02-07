@@ -34,7 +34,7 @@ public class GenericRVAdapter<E> extends RecyclerView.Adapter<ViewHolderFactory.
     }
 
     public void updateData(List<E> list) {
-        if(list != null && list.size() > 0){
+        if(list != null){
             this.listOfItems = list;
         }else{
             LoggerUtil.log("Empty list encountered for " + this.getClass().getTypeParameters());

@@ -72,14 +72,23 @@ public abstract class MoviesDao extends BaseDao<BaseMovieModel>{
     public abstract LiveData<Boolean> isBookMarked(int movieId);
 
     @Transaction
-    public void markUnmarkBook(int movieId){
-        updateTable(movieId);
+    public boolean markUnmarkBook(int movieId){
+        boolean exist = itemExists(movieId);
+        if (exist)
+           updateTable(movieId);
+        return exist;
     }
 
     @Query("UPDATE movies SET isBookMarked = (NOT isBookMarked) WHERE id = :movieId")
     public abstract void updateTable(int movieId);
 
+    @Query("SELECT EXISTS (SELECT 1 FROM movies WHERE id = :movieId)")
+    public abstract boolean itemExists(int movieId);
+
     @Query("UPDATE movies SET isTrending = 0 WHERE id IN (SELECT id FROM movies WHERE id NOT IN (:list) AND isTrending = 1)")
     public abstract void unflagOldTrendingMovies(List<Integer> list);
+
+    @Query("SELECT * FROM movies WHERE isBookMarked = 1")
+    public abstract LiveData<List<BaseMovieModel>> getMarkedMovies();
 
 }

@@ -24,9 +24,9 @@ public class MovieDetailActivity extends AppCompatActivity {
         MovieDetailVM movieDetailVM = new ViewModelProvider(this).get(MovieDetailVM.class);
         binding.setLifecycleOwner(this);
         binding.setModel(movieDetailVM);
-        binding.setImageUrl("/nogV4th2P5QWYvQIMiWHj4CFLU9.jpg");
+        binding.setImageUrl(getIntent().getStringExtra("url"));
         binding.executePendingBindings();
 
-        movieDetailVM.fetchMovieDetails(315635);//TODO
+        movieDetailVM.fetchMovieDetails(getIntent().getIntExtra("id", 0), binding.getImageUrl());
     }
 }

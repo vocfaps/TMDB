@@ -53,8 +53,13 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void onClick(View view){
+    public void openSearch(View view){
         Intent intent = new Intent(this, SearchActivity.class);
+        startActivity(intent);
+    }
+
+    public void openBookMark(View view){
+        Intent intent = new Intent(this, BookMarkActivity.class);
         startActivity(intent);
     }
 

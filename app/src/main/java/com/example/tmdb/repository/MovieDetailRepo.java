@@ -3,9 +3,11 @@ package com.example.tmdb.repository;
 import android.os.AsyncTask;
 
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.tmdb.contracts.IMovieDetailRepository;
+import com.example.tmdb.datamodel.BaseMovieModel;
 import com.example.tmdb.datamodel.MovieDetailModel;
 import com.example.tmdb.db.MoviesDao;
 
@@ -18,8 +20,9 @@ import retrofit2.Response;
 
 public class MovieDetailRepo implements IMovieDetailRepository {
 
-    private IMovieDetails movieDetails;
-    private MoviesDao moviesDao;
+    private final IMovieDetails movieDetails;
+    private final MoviesDao moviesDao;
+    MutableLiveData<MovieDetailModel> liveData = new MutableLiveData<>();
     @Inject
     public MovieDetailRepo(IMovieDetails movieDetails, MoviesDao moviesDao){
         this.movieDetails = movieDetails;
@@ -28,7 +31,6 @@ public class MovieDetailRepo implements IMovieDetailRepository {
 
     @Override
     public LiveData<MovieDetailModel> getMovieDetails(int movieId) {
-        MutableLiveData<MovieDetailModel> liveData = new MutableLiveData<>();
         Call<MovieDetailModel> call = movieDetails.getMovieDetails(movieId);
         call.enqueue(new Callback<MovieDetailModel>() {
             @Override
@@ -49,7 +51,27 @@ public class MovieDetailRepo implements IMovieDetailRepository {
     }
 
     @Override
-    public void bookMarkMovie(int movieId) {
-        AsyncTask.SERIAL_EXECUTOR.execute(() ->  moviesDao.markUnmarkBook(movieId));
+    public void bookMarkMovie(int movieId, String imageUrl) {
+        AsyncTask.SERIAL_EXECUTOR.execute(() ->  {
+            if(!moviesDao.markUnmarkBook(movieId))
+                moviesDao.insert(constructMovieModel(liveData.getValue(), imageUrl));
+        });
+
+    }
+
+    private BaseMovieModel constructMovieModel(MovieDetailModel value, String imageUrl) {
+       BaseMovieModel movieModel = new BaseMovieModel();
+       movieModel.setMarked(true);
+       movieModel.setId(value.getId());
+       movieModel.setName(value.getTitle());
+       movieModel.setUrl(imageUrl);
+       return movieModel;
+    }
+
+    @Override
+    public LiveData<Boolean> isMovieBookMarked(int movieId) {
+        MediatorLiveData<Boolean> liveData = new MediatorLiveData<>();
+        AsyncTask.SERIAL_EXECUTOR.execute(() -> liveData.addSource(moviesDao.isBookMarked(movieId), liveData::postValue));
+        return liveData;
     }
 }

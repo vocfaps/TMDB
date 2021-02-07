@@ -1,14 +1,13 @@
 package com.example.tmdb.viewmodel;
 
 import android.app.Application;
-import android.os.AsyncTask;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Transformations;
+import androidx.lifecycle.Observer;
 
 import com.example.tmdb.contracts.IMovieDetailRepository;
 import com.example.tmdb.datamodel.MovieDetailModel;
@@ -22,37 +21,30 @@ import dagger.hilt.android.lifecycle.HiltViewModel;
 public class MovieDetailVM extends AndroidViewModel {
 
     private final IMovieDetailRepository movieRepository;
-    private final MutableLiveData<MovieDetailModel> movieDetailModel = new MutableLiveData<>();
-    private final MoviesDao bookMarkDao;
+    private final MediatorLiveData<MovieDetailModel> movieDetailModelLiveData = new MediatorLiveData<>();
     private final MediatorLiveData<Boolean> bookMarkStatusLiveData = new MediatorLiveData<>();
+    private String imageUrl = "";
 
     @Inject
     public MovieDetailVM(@NonNull Application application, IMovieDetailRepository movieRepository, MoviesDao bookMarkDao) {
         super(application);
         this.movieRepository = movieRepository;
-        this.bookMarkDao = bookMarkDao;
+    }
 
+    public void fetchMovieDetails(int movieId, String imageUrl) {
+        movieDetailModelLiveData.addSource(movieRepository.getMovieDetails(movieId), movieDetailModelLiveData::setValue);
         //mark unmark livedata
-        bookMarkStatusLiveData.addSource(Transformations.switchMap(movieDetailModel, input -> {
-            MediatorLiveData<Boolean> isBookMarked = new MediatorLiveData<>();
-            AsyncTask.SERIAL_EXECUTOR.execute(() -> isBookMarked.addSource(bookMarkDao.isBookMarked(input.getId()), isBookMarked::setValue));
-            return isBookMarked;
-        }), bookMarkStatusLiveData::setValue);
+        bookMarkStatusLiveData.addSource(movieRepository.isMovieBookMarked(movieId), bookMarkStatusLiveData::postValue);
+        this.imageUrl = imageUrl;
     }
 
-    public void fetchMovieDetails(int movieId) {
-        movieRepository.getMovieDetails(movieId);
-    }
-
-    public MutableLiveData<MovieDetailModel> getMovieDetailModel() {
-        return movieDetailModel;
+    public MutableLiveData<MovieDetailModel> getMovieDetailModelLiveData() {
+        return movieDetailModelLiveData;
     }
 
     public void markModel() {
-        if (movieDetailModel.getValue() != null) {
-            AsyncTask.SERIAL_EXECUTOR.execute(() ->
-                    bookMarkDao.markUnmarkBook(movieDetailModel.getValue().getId())
-            );
+        if (movieDetailModelLiveData.getValue() != null) {
+            movieRepository.bookMarkMovie(movieDetailModelLiveData.getValue().getId(), imageUrl);
         }
     }
 
