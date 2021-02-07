@@ -7,10 +7,8 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
 
 import com.example.tmdb.contracts.IMovieHomeRepository;
-import com.example.tmdb.datamodel.NowPlayingMovieModel;
-import com.example.tmdb.datamodel.NowPlayingMoviewResponseModel;
-import com.example.tmdb.datamodel.TrendingMovieModel;
-import com.example.tmdb.datamodel.TrendingMovieResponseModel;
+import com.example.tmdb.datamodel.BaseMovieModel;
+import com.example.tmdb.datamodel.BaseResponseModel;
 import com.example.tmdb.db.MovieDatabase;
 
 import java.util.List;
@@ -29,11 +27,11 @@ public class HomeScreenLocalRepository implements IMovieHomeRepository {
 
     private final MovieDatabase database;
     private final IHomeResponse homeResponseSource;
-    private final MediatorLiveData<List<TrendingMovieModel>> trendingliveData =  new MediatorLiveData<>();
-    private final MediatorLiveData<List<NowPlayingMovieModel>> newMovieLiveData = new MediatorLiveData<>();
+    private final MediatorLiveData<List<BaseMovieModel>> trendingliveData =  new MediatorLiveData<>();
+    private final MediatorLiveData<List<BaseMovieModel>> newMovieLiveData = new MediatorLiveData<>();
 
-    private void getNewMovieDBData(MediatorLiveData<List<NowPlayingMovieModel>> newMovieLiveData) {
-        newMovieLiveData.addSource(database.getPlayingMovieDao().getAllNewMovies(), newMovieLiveData::postValue);
+    private void getNewMovieDBData(MediatorLiveData<List<BaseMovieModel>> newMovieLiveData) {
+        newMovieLiveData.addSource(database.getMovieDao().getAllNowMovies(), newMovieLiveData::postValue);
     }
 
     @Inject public HomeScreenLocalRepository(@ApplicationContext Context context, MovieDatabase database, IHomeResponse homeResponse){
@@ -42,35 +40,35 @@ public class HomeScreenLocalRepository implements IMovieHomeRepository {
     }
 
     @Override
-    public LiveData<List<TrendingMovieModel>> fetchTrendingMovies() {
+    public LiveData<List<BaseMovieModel>> fetchTrendingMovies() {
         //Start observing a livedata from DB.
         AsyncTask.SERIAL_EXECUTOR.execute(() -> getTrendingDBData(trendingliveData));
         return trendingliveData;
     }
 
-    private void getTrendingDBData(MediatorLiveData<List<TrendingMovieModel>> liveData) {
+    private void getTrendingDBData(MediatorLiveData<List<BaseMovieModel>> liveData) {
         liveData.addSource(database.getMovieDao().getAllTrendingMovies(), liveData::postValue);
     }
 
     @Override
-    public LiveData<List<NowPlayingMovieModel>> fetchNowPLayingMovies() {
+    public LiveData<List<BaseMovieModel>> fetchNowPLayingMovies() {
         AsyncTask.SERIAL_EXECUTOR.execute(() -> getNewMovieDBData(newMovieLiveData));
         return newMovieLiveData;
     }
 
     @Override
     public void updateTrendingMovies() {
-        Call<TrendingMovieResponseModel> call = homeResponseSource.getTrendingMovies();
-        call.enqueue(new Callback<TrendingMovieResponseModel>() {
+        Call<BaseResponseModel> call = homeResponseSource.getTrendingMovies();
+        call.enqueue(new Callback<BaseResponseModel>() {
             @Override
-            public void onResponse(Call<TrendingMovieResponseModel> call, Response<TrendingMovieResponseModel> response) {
+            public void onResponse(Call<BaseResponseModel> call, Response<BaseResponseModel> response) {
                 if (response.isSuccessful() && response.body() != null && response.body().getResults() != null){
-                    AsyncTask.SERIAL_EXECUTOR.execute(() -> database.getMovieDao().pushNewResults(response.body().getResults()));
+                    AsyncTask.SERIAL_EXECUTOR.execute(() -> database.getMovieDao().pushNewTrendingResults(response.body().getResults()));
                 }
             }
 
             @Override
-            public void onFailure(Call<TrendingMovieResponseModel> call, Throwable t) {
+            public void onFailure(Call<BaseResponseModel> call, Throwable t) {
 
             }
         });
@@ -78,18 +76,18 @@ public class HomeScreenLocalRepository implements IMovieHomeRepository {
 
     @Override
     public void updateNowPlayingMovies() {
-        Call<NowPlayingMoviewResponseModel> call =  homeResponseSource.getNowPlayingMovies();
-        call.enqueue(new Callback<NowPlayingMoviewResponseModel>() {
+        Call<BaseResponseModel> call =  homeResponseSource.getNowPlayingMovies();
+        call.enqueue(new Callback<BaseResponseModel>() {
             @Override
-            public void onResponse(Call<NowPlayingMoviewResponseModel> call, Response<NowPlayingMoviewResponseModel> response) {
+            public void onResponse(Call<BaseResponseModel> call, Response<BaseResponseModel> response) {
                 if (response.isSuccessful() && response.body() != null && response.body().getResults() != null){
-                    AsyncTask.SERIAL_EXECUTOR.execute(() -> database.getPlayingMovieDao().pushNewResults(response.body().getResults()));
+                    AsyncTask.SERIAL_EXECUTOR.execute(() -> database.getMovieDao().pushNewPlayingResults(response.body().getResults()));
                 }
 
             }
 
             @Override
-            public void onFailure(Call<NowPlayingMoviewResponseModel> call, Throwable t) {
+            public void onFailure(Call<BaseResponseModel> call, Throwable t) {
 
             }
         });

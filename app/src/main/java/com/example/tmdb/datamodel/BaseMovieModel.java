@@ -1,12 +1,14 @@
 package com.example.tmdb.datamodel;
 
 import androidx.room.ColumnInfo;
+import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
 
+@Entity(tableName = "movies")
 public class BaseMovieModel implements Serializable {
     @ColumnInfo(name = "poster_path")
     @SerializedName("poster_path")
@@ -18,6 +20,16 @@ public class BaseMovieModel implements Serializable {
     @SerializedName("id")
     @ColumnInfo(name = "id")
     int id;
+
+    @ColumnInfo(name = "isBookMarked")
+    boolean isMarked;
+
+    @ColumnInfo(name = "isTrending")
+    boolean isTrending;
+
+    @ColumnInfo(name = "isNowPlaying")
+    boolean isNowPlaying;
+
 
     public String getUrl() {
         return url;
@@ -41,5 +53,29 @@ public class BaseMovieModel implements Serializable {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public boolean isMarked() {
+        return isMarked;
+    }
+
+    public void setMarked(boolean marked) {
+        isMarked = marked;
+    }
+
+    public boolean isTrending() {
+        return isTrending;
+    }
+
+    public void setTrending(boolean trending) {
+        isTrending = trending;
+    }
+
+    public boolean isNowPlaying() {
+        return isNowPlaying;
+    }
+
+    public void setNowPlaying(boolean nowPlaying) {
+        isNowPlaying = nowPlaying;
     }
 }

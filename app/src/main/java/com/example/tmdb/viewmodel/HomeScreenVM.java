@@ -10,8 +10,7 @@ import androidx.lifecycle.Transformations;
 
 import com.example.tmdb.NetworkUtils;
 import com.example.tmdb.contracts.IMovieHomeRepository;
-import com.example.tmdb.datamodel.NowPlayingMovieModel;
-import com.example.tmdb.datamodel.TrendingMovieModel;
+import com.example.tmdb.datamodel.BaseMovieModel;
 
 import java.util.List;
 
@@ -21,8 +20,8 @@ import dagger.hilt.android.lifecycle.HiltViewModel;
 
 @HiltViewModel
 public class HomeScreenVM extends AndroidViewModel {
-    private final MutableLiveData<List<TrendingMovieModel>> trendingMovieModelLiveData = new MutableLiveData<>();
-    private final MutableLiveData<List<NowPlayingMovieModel>> nowPlayingMovieModelLiveData = new MutableLiveData<>();
+    private final MutableLiveData<List<BaseMovieModel>> trendingMovieModelLiveData = new MutableLiveData<>();
+    private final MutableLiveData<List<BaseMovieModel>> nowPlayingMovieModelLiveData = new MutableLiveData<>();
 
     private final IMovieHomeRepository localRepository;
 
@@ -31,7 +30,7 @@ public class HomeScreenVM extends AndroidViewModel {
         this.localRepository = localRepository;
     }
 
-    public LiveData<List<TrendingMovieModel>> getTrendingMovieModelLiveData() {
+    public LiveData<List<BaseMovieModel>> getTrendingMovieModelLiveData() {
         if (trendingMovieModelLiveData.getValue() == null) {//this is done so that every attachment to the livedata does not trigger a repository-Hit
             return Transformations.switchMap(localRepository.fetchTrendingMovies(), input -> {
                 trendingMovieModelLiveData.setValue(input);
@@ -43,7 +42,7 @@ public class HomeScreenVM extends AndroidViewModel {
         return trendingMovieModelLiveData;
     }
 
-    public LiveData<List<NowPlayingMovieModel>> getNowPlayingMovieModelLiveData() {
+    public LiveData<List<BaseMovieModel>> getNowPlayingMovieModelLiveData() {
         if (nowPlayingMovieModelLiveData.getValue() == null) {//this is done so that every attachment to the livedata does not trigger a repository-Hit
             return Transformations.switchMap(localRepository.fetchNowPLayingMovies(), input -> {
                 nowPlayingMovieModelLiveData.setValue(input);

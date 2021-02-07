@@ -8,10 +8,8 @@ import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
-import com.example.tmdb.datamodel.NowPlayingMovieModel;
-import com.example.tmdb.datamodel.NowPlayingMoviewResponseModel;
-import com.example.tmdb.datamodel.TrendingMovieModel;
-import com.example.tmdb.datamodel.TrendingMovieResponseModel;
+import com.example.tmdb.datamodel.BaseMovieModel;
+import com.example.tmdb.datamodel.BaseResponseModel;
 import com.example.tmdb.logger.LoggerUtil;
 import com.google.gson.Gson;
 
@@ -19,15 +17,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
-@androidx.room.Database(entities = {TrendingMovieModel.class, NowPlayingMovieModel.class}, version = 1, exportSchema = false)
+@androidx.room.Database(entities = {BaseMovieModel.class}, version = 2, exportSchema = false)
 public abstract class MovieDatabase extends RoomDatabase {
 
     private static final String DATABASE_NAME = "movie-db";
     private static final String TRENDING_MOVIE_FILENAME = "trending_movie.json";
     private static final String NOW_PLAYING_FILENAME = "now_playing_movie.json";
 
-    public abstract TrendingMoviesDao getMovieDao();
-    public abstract NowPlayingMoviesDao getPlayingMovieDao();
+    public abstract MoviesDao getMovieDao();
 
     private static MovieDatabase instance;
 
@@ -49,17 +46,18 @@ public abstract class MovieDatabase extends RoomDatabase {
                         AsyncTask.SERIAL_EXECUTOR.execute(() -> preloadData(context));
                     }
                 })
+                .fallbackToDestructiveMigration()
                 .build();
     }
 
     public static void preloadData(Context context) {
-        TrendingMovieResponseModel movieResponseModel= readLocalFile(context, TRENDING_MOVIE_FILENAME, TrendingMovieResponseModel.class);
+        BaseResponseModel movieResponseModel= readLocalFile(context, TRENDING_MOVIE_FILENAME, BaseResponseModel.class);
         LoggerUtil.log("DB created with trending movie list size -> "+ movieResponseModel.getResults().size());
-        getInstance(context).getMovieDao().pushNewResults(movieResponseModel.getResults());
+        getInstance(context).getMovieDao().pushNewTrendingResults(movieResponseModel.getResults());
 
-        NowPlayingMoviewResponseModel playingMoviewResponseModel = readLocalFile(context, NOW_PLAYING_FILENAME, NowPlayingMoviewResponseModel.class);
+        BaseResponseModel playingMoviewResponseModel = readLocalFile(context, NOW_PLAYING_FILENAME, BaseResponseModel.class);
         LoggerUtil.log("DB created with now playing movie list size -> "+ playingMoviewResponseModel.getResults().size());
-        getInstance(context).getPlayingMovieDao().pushNewResults(playingMoviewResponseModel.getResults());
+        getInstance(context).getMovieDao().pushNewPlayingResults(playingMoviewResponseModel.getResults());
     }
 
     private static <T> T readLocalFile(Context context, String fileName, Class<T> clazz) {

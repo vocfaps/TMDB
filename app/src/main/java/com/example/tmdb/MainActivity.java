@@ -11,8 +11,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.example.tmdb.adapters.GenericRVAdapter;
 import com.example.tmdb.databinding.ActivityMainBinding;
-import com.example.tmdb.datamodel.NowPlayingMovieModel;
-import com.example.tmdb.datamodel.TrendingMovieModel;
+import com.example.tmdb.datamodel.BaseMovieModel;
 import com.example.tmdb.viewmodel.HomeScreenVM;
 
 import java.util.ArrayList;
@@ -31,8 +30,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         //set binding variables
-        binding.setNowAdapter(new GenericRVAdapter<NowPlayingMovieModel>(new ArrayList<>()));
-        binding.setTrendingAdapter(new GenericRVAdapter<TrendingMovieModel>(new ArrayList<>()));
+        binding.setNowAdapter(new GenericRVAdapter<BaseMovieModel>(new ArrayList<>()));
+        binding.setTrendingAdapter(new GenericRVAdapter<BaseMovieModel>(new ArrayList<>()));
         binding.setHandler(this);
 
         HomeScreenVM viewModel = new ViewModelProvider(this).get(HomeScreenVM.class);
