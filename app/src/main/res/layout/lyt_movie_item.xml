@@ -7,6 +7,10 @@
         <variable
             name="model"
             type="com.example.tmdb.datamodel.BaseMovieModel" />
+
+        <variable
+            name="listener"
+            type="com.example.tmdb.ViewHolderFactory.CarouselMoviesVH" />
     </data>
 
 <androidx.constraintlayout.widget.ConstraintLayout
@@ -14,6 +18,7 @@
     android:layout_height="wrap_content"
     android:padding="10dp"
     android:layout_margin="10dp"
+    android:onClick="@{() -> listener.onClick(model)}"
     android:background="@color/purple_200">
 
     <ImageView

@@ -11,6 +11,7 @@ import androidx.lifecycle.Transformations;
 import com.example.tmdb.NetworkUtils;
 import com.example.tmdb.contracts.IMovieHomeRepository;
 import com.example.tmdb.datamodel.BaseMovieModel;
+import com.example.tmdb.logger.LoggerUtil;
 
 import java.util.List;
 
@@ -34,8 +35,6 @@ public class HomeScreenVM extends AndroidViewModel {
         if (trendingMovieModelLiveData.getValue() == null) {//this is done so that every attachment to the livedata does not trigger a repository-Hit
             return Transformations.switchMap(localRepository.fetchTrendingMovies(), input -> {
                 trendingMovieModelLiveData.setValue(input);
-                if (NetworkUtils.isNetworkAvailable(getApplication()))
-                   localRepository.updateTrendingMovies();
                 return trendingMovieModelLiveData;
             });
         }
@@ -46,11 +45,17 @@ public class HomeScreenVM extends AndroidViewModel {
         if (nowPlayingMovieModelLiveData.getValue() == null) {//this is done so that every attachment to the livedata does not trigger a repository-Hit
             return Transformations.switchMap(localRepository.fetchNowPLayingMovies(), input -> {
                 nowPlayingMovieModelLiveData.setValue(input);
-                if (NetworkUtils.isNetworkAvailable(getApplication()))
-                    localRepository.updateNowPlayingMovies();
                 return nowPlayingMovieModelLiveData;
             });
         }
         return nowPlayingMovieModelLiveData;
+    }
+
+    public void updateNowPlayingMovies() {
+        localRepository.updateNowPlayingMovies();
+    }
+
+    public void updateTrendingMovies() {
+        localRepository.updateTrendingMovies();
     }
 }

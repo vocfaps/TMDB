@@ -11,4 +11,10 @@ public class LoggerUtil {
             Log.d("Taaha", message);
         }
     }
+
+    public static void logBug(String message){
+        if(BuildConfig.DEBUG){
+            Log.d("BUGGER", message);
+        }
+    }
 }

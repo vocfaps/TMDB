@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+
+    <data>
+
+        <variable
+            name="model"
+            type="com.example.tmdb.viewmodel.MovieDetailVM" />
+
+        <variable
+            name="imageUrl"
+            type="String" />
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".MovieDetailActivity">
+
+        <ImageView
+            android:id="@+id/img_poster"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintDimensionRatio="H, 2:3"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:loadImage="@{imageUrl}" />
+
+        <TextView
+            android:id="@+id/txv_overview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="20dp"
+            android:text="@{model.movieDetailModel.overview}"
+            app:layout_constraintTop_toBottomOf="@id/img_poster" />
+
+        <ImageView
+            android:id="@+id/txv_bookMark"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:paddingTop="10dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/img_poster"
+            tools:src="@drawable/ic_launcher_background"
+            android:onClick="@{() -> model.markModel()}"
+            android:src="@{model.bookMarkStatusLiveData ? @drawable/active : @drawable/inactive }"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

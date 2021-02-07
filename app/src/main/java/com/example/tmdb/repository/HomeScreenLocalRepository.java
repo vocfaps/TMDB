@@ -10,6 +10,7 @@ import com.example.tmdb.contracts.IMovieHomeRepository;
 import com.example.tmdb.datamodel.BaseMovieModel;
 import com.example.tmdb.datamodel.BaseResponseModel;
 import com.example.tmdb.db.MovieDatabase;
+import com.example.tmdb.logger.LoggerUtil;
 
 import java.util.List;
 
@@ -63,6 +64,7 @@ public class HomeScreenLocalRepository implements IMovieHomeRepository {
             @Override
             public void onResponse(Call<BaseResponseModel> call, Response<BaseResponseModel> response) {
                 if (response.isSuccessful() && response.body() != null && response.body().getResults() != null){
+                    LoggerUtil.logBug("got response for trending of size " + response.body().getResults().size());
                     AsyncTask.SERIAL_EXECUTOR.execute(() -> database.getMovieDao().pushNewTrendingResults(response.body().getResults()));
                 }
             }
@@ -81,6 +83,7 @@ public class HomeScreenLocalRepository implements IMovieHomeRepository {
             @Override
             public void onResponse(Call<BaseResponseModel> call, Response<BaseResponseModel> response) {
                 if (response.isSuccessful() && response.body() != null && response.body().getResults() != null){
+                    LoggerUtil.logBug("got response for now Playing of size " + response.body().getResults().size());
                     AsyncTask.SERIAL_EXECUTOR.execute(() -> database.getMovieDao().pushNewPlayingResults(response.body().getResults()));
                 }
 

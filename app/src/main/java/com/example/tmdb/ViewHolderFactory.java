@@ -1,5 +1,6 @@
 package com.example.tmdb;
 
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
@@ -16,7 +17,7 @@ public class ViewHolderFactory {
        return new CarouselMoviesVH(DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()), R.layout.lyt_movie_item, parent, false));
     }
 
-    static class CarouselMoviesVH<E> extends BaseVH<BaseMovieModel> {
+    public static class CarouselMoviesVH<E> extends BaseVH<BaseMovieModel> {
 
         private final LytMovieItemBinding binding;
 
@@ -28,7 +29,15 @@ public class ViewHolderFactory {
         @Override
         public void bind(BaseMovieModel movieModel) {
             binding.setModel(movieModel);
+            binding.setListener(this);
             binding.executePendingBindings();
+        }
+
+        public void onClick(BaseMovieModel movieModel){
+            Intent intent = new Intent(binding.getRoot().getContext(), MovieDetailActivity.class);
+            intent.putExtra("id", movieModel.getId());
+            intent.putExtra("url", movieModel.getUrl());
+            binding.getRoot().getContext().startActivity(intent);
         }
     }
 
